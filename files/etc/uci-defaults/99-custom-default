@@ -15,4 +15,3 @@ uci set wireless.default_radio2.key="1234567890"
 uci commit network
 uci commit wireless
 exit 0
-
