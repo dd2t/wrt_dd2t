@@ -1,1 +1,18 @@
+#!/bin/sh
+uci set network.lan.ipaddr="192.168.10.1"
+uci set network.lan.netmask="255.255.255.0"
+
+# 关闭2.4G
+uci set wireless.radio0.disabled='1'
+# 关闭5.8G
+uci set wireless.radio1.disabled='1'
+# 开启5.2G，open5，密码1234567890
+uci set wireless.radio2.disabled='0'
+uci set wireless.default_radio2.ssid="open5"
+uci set wireless.default_radio2.encryption="psk2+ccmp"
+uci set wireless.default_radio2.key="1234567890"
+
+uci commit network
+uci commit wireless
+exit 0
 
