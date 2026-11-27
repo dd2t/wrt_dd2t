@@ -391,27 +391,34 @@ jobs:
   rclone-upload:
     needs: build
     runs-on: ubuntu-24.04
+    env:
+      RCLONE_REMOTE_NAME: ${{ secrets.RCLONE_REMOTE_NAME }}
     steps:
       - name: Checkout
+        if: ${{ env.RCLONE_REMOTE_NAME != '' }}
         uses: actions/checkout@v7
 
       - name: Download Build Artifacts
+        if: ${{ env.RCLONE_REMOTE_NAME != '' }}
         uses: actions/download-artifact@v8
         with:
           name: build-artifacts-${{ inputs.model }}-${{ needs.build.outputs.build_date }}
           path: .
 
       - name: Setup Rclone
+        if: ${{ env.RCLONE_REMOTE_NAME != '' }}
         uses: AnimMouse/setup-rclone@v1
         with:
           rclone_config: ${{ secrets.RCLONE_CONFIG }}
 
       - name: Upload Firmware & Kmods to OneDrive
+        if: ${{ env.RCLONE_REMOTE_NAME != '' }}
         run: |
           chmod +x .github/workflows/rclone_upload.sh
-          .github/workflows/rclone_upload.sh "./firmware" "${{ secrets.RCLONE_REMOTE_NAME }}" "${{ secrets.RCLONE_REMOTE_DIR }}/${{ inputs.model }}/${{ needs.build.outputs.build_date }}"
+          .github/workflows/rclone_upload.sh "./firmware" "$RCLONE_REMOTE_NAME" "${{ secrets.RCLONE_REMOTE_DIR }}/${{ inputs.model }}/${{ needs.build.outputs.build_date }}"
 
       - name: Generate Secrets Token (via GitHub App)
+        if: ${{ env.RCLONE_REMOTE_NAME != '' }}
         id: app-token
         uses: actions/create-github-app-token@v1
         with:
@@ -419,7 +426,12 @@ jobs:
           private-key: ${{ secrets.RCLONE_APP_PRIVATE_KEY }}
 
       - name: Update Rclone Config in Secrets
+        if: ${{ env.RCLONE_REMOTE_NAME != '' }}
         uses: AnimMouse/setup-rclone/update-config@v1
         with:
           rclone_config_secret_name: RCLONE_CONFIG
           token: ${{ steps.app-token.outputs.token }}
+
+      - name: Skip OneDrive upload (Rclone not configured)
+        if: ${{ env.RCLONE_REMOTE_NAME == '' }}
+        run: echo "RCLONE_REMOTE_NAME not set (fork repos do not inherit Secrets). Skipping optional OneDrive upload."
