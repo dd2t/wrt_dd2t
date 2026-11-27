@@ -31,7 +31,7 @@ if [[ -n "$TARGET_INI" && -f "$TARGET_INI" ]]; then
         GOLANG_BRANCH="$_CUSTOM_GO_BRANCH"
     fi
 fi
-LAN_ADDR="192.168.1.1"
+LAN_ADDR="192.168.10.1"
 
 SCRIPT_DIR=$(cd $(dirname $0) && pwd)
 BASE_PATH=${BASE_PATH:-$SCRIPT_DIR}
