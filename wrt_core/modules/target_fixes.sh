@@ -5,6 +5,7 @@ fix_default_set() {
     # 注入系统设置和目标平台通用补丁；主题相关行为由 recipe 接管。
     install -Dm544 "$BASE_PATH/patches/991_custom_settings" "$BUILD_DIR/package/base-files/files/etc/uci-defaults/991_custom_settings"
     install -Dm544 "$BASE_PATH/patches/992_set-wifi-uci.sh" "$BUILD_DIR/package/base-files/files/etc/uci-defaults/992_set-wifi-uci.sh"
+    install -Dm544 "$BASE_PATH/patches/999_custom_default.sh" "$BUILD_DIR/package/base-files/files/etc/uci-defaults/999_custom_default.sh"
 
     if [ -f "$BUILD_DIR/package/emortal/autocore/files/tempinfo" ]; then
         if [ -f "$BASE_PATH/patches/tempinfo" ]; then
